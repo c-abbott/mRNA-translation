@@ -14,7 +14,7 @@ class ProteinSynthesis(object):
     
     def __init__(self, length, size, alpha, t_rates):
         # Initialising parameters.
-        self.length = length
+        self.length = length 
         self.size = size
         self.alpha = alpha
         self.t_rates = t_rates
@@ -23,13 +23,21 @@ class ProteinSynthesis(object):
     def build_strand(self):
         self.taus = np.zeros(self.size)
 
-    def sum_t_rates(self):
+    def get_propensity(self):
+        a_1 = self.alpha
+        for j in range(1, self.length+1):
+            a_1 *= (1-self.taus[j])
         # Ensures dimensions are consistent.
-        taus_l = np.append(self.taus[self.length:], np.zeros(self.length))
+        taus_l = np.append(self.taus[self.length:], np.zeros(self.length-1))
         # Array of possible transitions.
-        a = self.t_rates*self.taus*(1 - taus_l)
-        # Calculates sum of allowed transition rates.
+        a = self.t_rates*self.taus[1:]*(1 - taus_l)
+        a = np.append(a_1, a)
+        return a
+    
+    def get_R(self, a):
         R = np.sum(a)
+        return R
+
 
 
        
