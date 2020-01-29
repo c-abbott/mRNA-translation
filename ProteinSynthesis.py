@@ -47,8 +47,8 @@ class ProteinSynthesis(object):
     
     def get_R(self, a):
         """
-            Calculates R - the sum of all of all
-            possible transitions
+            Calculates R - the sum of all possible 
+            transitions.
         """
         R = np.sum(a)
         return(R)
@@ -59,6 +59,13 @@ class ProteinSynthesis(object):
             in order to perform inverse transform sampling.
         """
         return (-math.log(random.uniform(0,1)) / R)
+    
+    def get_random_trans(self, R):
+        """
+            Generates random number between 0 and R to
+            determine which transition occurs.
+        """
+        return(random.uniform(0,1)*R)
 
 
 
