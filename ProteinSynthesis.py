@@ -16,9 +16,9 @@ class ProteinSynthesis(object):
     
     def __init__(self, length, size, alpha, t_rates):
         # Initialising parameters.
-        self.length = length 
-        self.size = size
-        self.alpha = alpha
+        self.length = int(length)
+        self.size = int(size)
+        self.alpha = float(alpha)
         self.t_rates = t_rates
         self.build_strand()
 
@@ -60,12 +60,29 @@ class ProteinSynthesis(object):
         """
         return (-math.log(random.uniform(0,1)) / R)
     
-    def get_random_trans(self, R):
+    def transition(self, R):
         """
-            Generates random number between 0 and R to
-            determine which transition occurs.
+            Finds the index to indicate which transition
+            occurs i.e. which ribosome hops.
         """
-        return(random.uniform(0,1)*R)
+        r = random.uniform(0, 1) * R
+        sum = 0
+        j = 0
+        while sum < r:
+            sum += R[j]
+            j += 1
+        return j
+
+    def update_prop(self, index):
+
+    def run(self):
+        for i in range(100):
+            a = self.get_propensity
+            R = self.get_R
+            t = self.get_random_time(R)
+            
+
+    
 
 
 
