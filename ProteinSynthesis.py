@@ -1,4 +1,6 @@
 import numpy as np
+import random
+import math
 
 class ProteinSynthesis(object):
     """
@@ -21,9 +23,18 @@ class ProteinSynthesis(object):
         self.build_strand()
 
     def build_strand(self):
+        """
+            Creates empty 1D lattice acting as the 
+            mRNA strand.
+        """
         self.taus = np.zeros(self.size)
 
     def get_propensity(self):
+        """
+            Creates a propensity array in order to tell
+            which state transitions are possible.
+        """
+        # Obtain initial propensity.
         a_1 = self.alpha
         for j in range(1, self.length+1):
             a_1 *= (1-self.taus[j])
@@ -35,8 +46,19 @@ class ProteinSynthesis(object):
         return a
     
     def get_R(self, a):
+        """
+            Calculates R - the sum of all of all
+            possible transitions
+        """
         R = np.sum(a)
-        return R
+        return(R)
+
+    def get_random_time(self, R):
+        """
+            Generates random sample from exponential dist
+            in order to perform inverse transform sampling.
+        """
+        return (-math.log(random.uniform(0,1)) / R)
 
 
 
