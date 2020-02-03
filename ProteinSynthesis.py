@@ -2,6 +2,7 @@ import numpy as np
 import random
 import math
 
+
 class ProteinSynthesis(object):
     """
         A class to simulate protein synthesis. Specifically the
@@ -13,14 +14,15 @@ class ProteinSynthesis(object):
         alpha - float, initiation rate of ribosome attaching to mRNA strand.
         t_rates - ndarray, array of transition rates between codon sites.
     """
-    
+
     def __init__(self, length, size, alpha, t_rates):
         # Initialising parameters.
         self.length = int(length)
         self.size = int(size)
         self.alpha = float(alpha)
-        self.t_rates = t_rates
+        self.t_rates = t_rates  # goes from site 2 to site L (site L = beta)
         self.build_strand()
+        self.get_propensity()
 
     def build_strand(self):
         """
@@ -36,21 +38,20 @@ class ProteinSynthesis(object):
         """
         # Obtain initial propensity.
         a_1 = self.alpha
-        for j in range(1, self.length+1):
-            a_1 *= (1-self.taus[j])
+        for j in range(1, self.length + 1):
+            a_1 *= (1 - self.taus[j])
         # Ensures dimensions are consistent.
-        taus_l = np.append(self.taus[self.length:], np.zeros(self.length-1))
+        taus_l = np.append(self.taus[self.length:], np.zeros(self.length - 1))
         # Array of possible transitions.
-        a = self.t_rates*self.taus[1:]*(1 - taus_l)
-        a = np.append(a_1, a)
-        return a
-    
-    def get_R(self, a):
+        a = self.t_rates * self.taus[1:] * (1 - taus_l)
+        self.a = np.append(a_1, a)
+
+    def get_R(self):
         """
             Calculates R - the sum of all possible 
             transitions.
         """
-        R = np.sum(a)
+        R = np.sum(self.a)
         return(R)
 
     def get_random_time(self, R):
@@ -58,18 +59,18 @@ class ProteinSynthesis(object):
             Generates random sample from exponential dist
             in order to perform inverse transform sampling.
         """
-        return (-math.log(random.uniform(0,1)) / R)
-    
-    def transition(self, R):
+        return (-math.log(random.uniform(0, 1)) / R)
+
+    def get_transition(self, R):
         """
             Finds the index to indicate which transition
             occurs i.e. which ribosome hops.
         """
-        r = random.uniform(0, 1) * R
-        sum = 0
+        r = random.randint(0, R)
+        sum = self.a[0]
         j = 0
         while sum < r:
-            sum += R[j]
+            sum += self.a[j]
             j += 1
         return j
 
@@ -80,10 +81,3 @@ class ProteinSynthesis(object):
             a = self.get_propensity
             R = self.get_R
             t = self.get_random_time(R)
-            
-
-    
-
-
-
-       
