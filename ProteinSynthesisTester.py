@@ -31,6 +31,8 @@ def main():
         t = simulation.get_random_time(R)
         index = simulation.get_transition(R)
         simulation.update(index)
+        simulation.unblocker(index)
+        
         print(index)
         print(simulation.taus[0:15])
         print(simulation.a[0:15])

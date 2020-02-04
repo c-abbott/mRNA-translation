@@ -29,7 +29,7 @@ class ProteinSynthesis(object):
             Creates empty 1D lattice acting as the 
             mRNA strand.
         """
-        self.taus = np.zeros(self.size)
+        self.taus = np.zeros(self.size, dtype=int)
 
     def build_propensity(self):
         """
@@ -66,8 +66,7 @@ class ProteinSynthesis(object):
             Finds the index to indicate which transition
             occurs i.e. which ribosome hops.
         """
-        r = random.uniform(0, 1)
-        r *= R
+        r = random.uniform(0, 1) * R
         sum = self.a[0]
         j = 0
         while sum < r:
@@ -89,7 +88,7 @@ class ProteinSynthesis(object):
             self.a[index+1] = self.omegas[index+1] * \
                 (1-self.taus[index+1+self.length])
         # Elongation at index and intiation.
-        elif index == self.length + 1:
+        elif index == (self.length + 1):
             self.taus[index] = 0
             self.taus[index+1] = 1
             self.a[index] = 0
@@ -97,22 +96,31 @@ class ProteinSynthesis(object):
                 (1-self.taus[index+1+self.length])
             self.a[0] = self.alpha
 
-        elif index >= self.length + 2 and index <= self.size-self.length-2:
+        elif index >= (self.length + 2) and index <= (self.size-self.length-2):
             self.taus[index] = 0
             self.taus[index+1] = 1
             self.a[index] = 0
             self.a[index+1] = self.omegas[index+1] * \
                 (1-self.taus[index+1+self.length])
 
-        elif index >= self.size-self.length-1 and index <= self.size-2:
+        # No ribosomes ahead.
+        elif index >= (self.size-self.length-1) and index <= (self.size-2):
             self.taus[index] = 0
             self.taus[index+1] = 1
             self.a[index] = 0
             self.a[index+1] = self.omegas[index+1]
-        
-        elif index == self.size-1:
+            
+        # Detaching from lattice.
+        elif index == (self.size-1):
             self.taus[index] = 0
             self.a[index] = 0
+
+    def unblocker(self, index):
+        positions = np.where(self.taus == 1)[0]
+        dist =  positions[-1] - positions[0]
+        print(dist)
+        if dist > self.length:
+            self.a[index+1] = self.omegas[index]
 
             
             
