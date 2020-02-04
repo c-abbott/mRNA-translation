@@ -16,23 +16,24 @@ def main():
         line = input_file.readline()
         items = line.split(", ")
 
-        r_length = int(items[0])  # Ribosome length.
-        l_length = int(items[1])  # Lattice length.
+        l = int(items[0])  # Ribosome length.
+        L = int(items[1])  # Lattice length.
         alpha = float(items[2])   # Initiation rate.
         mcsteps = int(items[3])   # Monte Carlo steps.
-    omegas = np.ones(l_length-1)*0.8 # Transition Rates
+    omegas = np.ones(L-1)*1.1 # Transition Rates
+    omegas[-1] = 1000
 
-    simulation = ProteinSynthesis(length = r_length, size = l_length, alpha = alpha, t_rates = omegas)
+    simulation = ProteinSynthesis(length = l, size = L, alpha = alpha, omegas = omegas)
     
     for i in range(mcsteps):
         R = simulation.get_R()
+        print(R)
         t = simulation.get_random_time(R)
         index = simulation.get_transition(R)
+        simulation.update(index)
         print(index)
-
-
-
-
-
+        print(simulation.taus[0:15])
+        print(simulation.a[0:15])
+        
 
 main()

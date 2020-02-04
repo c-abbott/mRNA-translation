@@ -15,12 +15,12 @@ class ProteinSynthesis(object):
         t_rates - ndarray, array of transition rates between codon sites.
     """
 
-    def __init__(self, length, size, alpha, t_rates):
+    def __init__(self, length, size, alpha, omegas):
         # Initialising parameters.
         self.length = int(length)
         self.size = int(size)
         self.alpha = float(alpha)
-        self.t_rates = t_rates  # goes from site 2 to site L (site L = beta)
+        self.omegas = omegas  # goes from site 2 to site L (site L = beta)
         self.build_strand()
         self.build_propensity()
 
@@ -52,7 +52,7 @@ class ProteinSynthesis(object):
             transitions.
         """
         R = np.sum(self.a)
-        return(R)
+        return (R)
 
     def get_random_time(self, R):
         """
@@ -66,13 +66,58 @@ class ProteinSynthesis(object):
             Finds the index to indicate which transition
             occurs i.e. which ribosome hops.
         """
-        r = random.randint(0, R)
+        r = random.uniform(0, 1)
+        r *= R
         sum = self.a[0]
         j = 0
         while sum < r:
-            sum += self.a[j]
+            sum += self.a[j+1]
             j += 1
         return j
+    
+    def update(self, index):
+        # Initiation.
+        if index == 0:
+            self.taus[1] = 1
+            self.a[0] = 0
+            self.a[1] = self.omegas[1]*(1 - self.taus[self.length+1])
+        # Elongation at index.
+        elif index >= 1 and index <= self.length:
+            self.taus[index] = 0
+            self.taus[index+1] = 1
+            self.a[index] = 0
+            self.a[index+1] = self.omegas[index+1] * \
+                (1-self.taus[index+1+self.length])
+        # Elongation at index and intiation.
+        elif index == self.length + 1:
+            self.taus[index] = 0
+            self.taus[index+1] = 1
+            self.a[index] = 0
+            self.a[index+1] = self.omegas[index+1] * \
+                (1-self.taus[index+1+self.length])
+            self.a[0] = self.alpha
 
-    #def update_prop(self, index):
+        elif index >= self.length + 2 and index <= self.size-self.length-2:
+            self.taus[index] = 0
+            self.taus[index+1] = 1
+            self.a[index] = 0
+            self.a[index+1] = self.omegas[index+1] * \
+                (1-self.taus[index+1+self.length])
+
+        elif index >= self.size-self.length-1 and index <= self.size-2:
+            self.taus[index] = 0
+            self.taus[index+1] = 1
+            self.a[index] = 0
+            self.a[index+1] = self.omegas[index+1]
+        
+        elif index == self.size-1:
+            self.taus[index] = 0
+            self.a[index] = 0
+
+            
+            
+
+
+        
+
         
