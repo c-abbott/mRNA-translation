@@ -22,7 +22,7 @@ class ProteinSynthesis(object):
         self.alpha = float(alpha)
         self.t_rates = t_rates  # goes from site 2 to site L (site L = beta)
         self.build_strand()
-        self.get_propensity()
+        self.build_propensity()
 
     def build_strand(self):
         """
@@ -31,20 +31,20 @@ class ProteinSynthesis(object):
         """
         self.taus = np.zeros(self.size)
 
-    def get_propensity(self):
+    def build_propensity(self):
         """
             Creates a propensity array in order to tell
             which state transitions are possible.
         """
         # Obtain initial propensity.
-        a_1 = self.alpha
-        for j in range(1, self.length + 1):
-            a_1 *= (1 - self.taus[j])
+        #a_1 = self.alpha
+        #for j in range(1, self.length + 1):
+        #    a_1 *= (1 - self.taus[j])
         # Ensures dimensions are consistent.
-        taus_l = np.append(self.taus[self.length:], np.zeros(self.length - 1))
+        #taus_l = np.append(self.taus[self.length:], np.zeros(self.length - 1))
         # Array of possible transitions.
-        a = self.t_rates * self.taus[1:] * (1 - taus_l)
-        self.a = np.append(a_1, a)
+        self.a = np.zeros(self.size)
+        self.a[0] = self.alpha
 
     def get_R(self):
         """
@@ -74,5 +74,5 @@ class ProteinSynthesis(object):
             j += 1
         return j
 
-    def update_prop(self, index):
+    #def update_prop(self, index):
         
