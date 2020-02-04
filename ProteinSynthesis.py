@@ -75,9 +75,4 @@ class ProteinSynthesis(object):
         return j
 
     def update_prop(self, index):
-
-    def run(self):
-        for i in range(100):
-            a = self.get_propensity
-            R = self.get_R
-            t = self.get_random_time(R)
+        
