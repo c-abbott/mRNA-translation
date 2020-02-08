@@ -36,13 +36,6 @@ class ProteinSynthesis(object):
             Creates a propensity array in order to tell
             which state transitions are possible.
         """
-        # Obtain initial propensity.
-        #a_1 = self.alpha
-        #for j in range(1, self.length + 1):
-        #    a_1 *= (1 - self.taus[j])
-        # Ensures dimensions are consistent.
-        #taus_l = np.append(self.taus[self.length:], np.zeros(self.length - 1))
-        # Array of possible transitions.
         self.a = np.zeros(self.size)
         self.a[0] = self.alpha
 
@@ -102,6 +95,8 @@ class ProteinSynthesis(object):
             self.a[index] = 0
             self.a[index+1] = self.omegas[index+1] * \
                 (1-self.taus[index+1+self.length])
+            self.a[index-self.length] = self.omegas[index - self.length] \ 
+                                        * self.taus[index - self.length]
 
         # No ribosomes ahead.
         elif index >= (self.size-self.length-1) and index <= (self.size-2):
@@ -109,18 +104,16 @@ class ProteinSynthesis(object):
             self.taus[index+1] = 1
             self.a[index] = 0
             self.a[index+1] = self.omegas[index+1]
+            self.a[index-self.length] = self.omegas[index - self.length] \
+                                        * self.taus[index - self.length]
             
         # Detaching from lattice.
         elif index == (self.size-1):
             self.taus[index] = 0
             self.a[index] = 0
+            self.a[index-self.length] = self.omegas[index - self.length] \
+                                        * self.taus[index - self.length]
 
-    def unblocker(self, index):
-        positions = np.where(self.taus == 1)[0]
-        dist =  positions[-1] - positions[0]
-        print(dist)
-        if dist > self.length:
-            self.a[index+1] = self.omegas[index]
 
             
             
