@@ -131,7 +131,11 @@ class ProteinSynthesis(object):
             A method to determine the waiting time
             for the system to reach a steady state.
        """
-        if ((occ_num_new - occ_num_old) / occ_num_new) <= tolerance:
+        if (occ_num_new - occ_num_old) / occ_num_new <= tolerance:
             return True
         else:
             return False
+    
+    def get_densities(self, t0, t1):
+        densities = self.taus * t0 * (t1 - t0)
+        return densities
