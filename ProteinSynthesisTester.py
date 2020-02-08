@@ -24,15 +24,20 @@ def main():
         n = int(items[5])        # MC sampling frequency.
         tol = float(items[6])    # Steady state tolerance.
     omegas = np.ones(L)*1.1      # Transition Rates.
-    omegas[0] = 0
-    omegas[-1] = beta 
+    omegas[0] = 0                # Nothing will occupy first site.
+    omegas[-1] = beta            # Detatch at final site.
 
     # Create instance of the simulation.
     simulation = ProteinSynthesis(length = l, size = L, alpha = alpha, omegas = omegas)
     # Setting time domain
-    total_time = np.zeros(mcsteps)
+    time_steps = np.zeros(mcsteps) # Array of all time step sizes.
+    times = np.zeros(mcsteps) # Cumulative sum of times.
+    # Setting densities.
+    density = np.zeros(simulation.size)
     # Initially no ribosomes on mRNA strand.
     occ_num = 0
+    # For determining time to reach steady state.
+    outcome = False
 
     # Simulation begins.
     for i in range(mcsteps):
@@ -40,18 +45,19 @@ def main():
         R = simulation.get_R()
         # Increase time.
         t = simulation.get_random_time(R)
-        total_time[i] = t
+        time_steps[i] = t
+        times[i] = np.sum(time_steps[:i+1])
         # Choose which ribosome moves.
         index = simulation.get_transition(R)
         # Update simulation - ribosome hops.
         simulation.update(index)
 
         # Determine time to reach steady state.
-        if i % n == 0: 
+        if i % n == 0 and outcome == False:
             occ_num_new = simulation.get_occupation_number()
             outcome = simulation.ss_test(occ_num_new, occ_num, tol)
             occ_num = occ_num_new
             if outcome == True:
-                ss_time = total_time[i]
-        
+                ss_time = times[i]
+
 main()
