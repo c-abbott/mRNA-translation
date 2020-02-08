@@ -89,13 +89,14 @@ class ProteinSynthesis(object):
                 (1-self.taus[index+1+self.length])
             self.a[0] = self.alpha
 
+        # Elongation and potential unblocking.
         elif index >= (self.length + 2) and index <= (self.size-self.length-2):
             self.taus[index] = 0
             self.taus[index+1] = 1
             self.a[index] = 0
             self.a[index+1] = self.omegas[index+1] * \
                 (1-self.taus[index+1+self.length])
-            self.a[index-self.length] = self.omegas[index - self.length] \ 
+            self.a[index-self.length] = self.omegas[index - self.length] \
                                         * self.taus[index - self.length]
 
         # No ribosomes ahead.
@@ -113,6 +114,25 @@ class ProteinSynthesis(object):
             self.a[index] = 0
             self.a[index-self.length] = self.omegas[index - self.length] \
                                         * self.taus[index - self.length]
+        
+    def get_occupation_number(self):
+        """
+            A method to determine the total number
+            of ribosomes occupying the mRNA strand.
+        """
+        return np.sum(self.taus)
+
+    def ss_test(self, occ_num_new, occ_num_old, tolerance):
+        """
+            A method to determine the waiting time
+            for the system to reach a steady state.
+        """
+        if (occ_num_new-occ_num_old)/100 <= tolerance:
+            return True
+        
+        
+
+
 
 
             

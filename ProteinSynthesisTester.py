@@ -16,26 +16,39 @@ def main():
         line = input_file.readline()
         items = line.split(", ")
 
-        l = int(items[0])  # Ribosome length.
-        L = int(items[1])  # Lattice length.
-        alpha = float(items[2])   # Initiation rate.
-        mcsteps = int(items[3])   # Monte Carlo steps.
-    omegas = np.ones(L-1)*1.1 # Transition Rates
-    omegas[-1] = 1000
+        l = int(items[0])        # Ribosome length.
+        L = int(items[1])        # Lattice length.
+        alpha = float(items[2])  # Initiation rate.
+        beta = float(items[3])   # Detach rate.
+        mcsteps = int(items[4])  # Monte Carlo steps.
+        n = int(items[5])        # MC sampling frequency.
+        tol = float(items[6])    # Steady state tolerance.
+    omegas = np.ones(L-1)*1.1    # Transition Rates.
+    omegas[-1] = beta 
 
+    # Create instance of the simulation.
     simulation = ProteinSynthesis(length = l, size = L, alpha = alpha, omegas = omegas)
-    
+    # Setting time domain
+    total_time = np.zeros(mcsteps)
+    # Initially no ribosomes on mRNA strand.
+    occ_num = 0
+
+    # Simulation begins.
     for i in range(mcsteps):
+        # Collect all possible moves.
         R = simulation.get_R()
-        print(R)
+        # Increase time.
         t = simulation.get_random_time(R)
+        total_time[i] = t
+        # Choose which ribosome moves.
         index = simulation.get_transition(R)
         simulation.update(index)
-        simulation.unblocker(index)
+        # Determine time to reach steady state.
+        if i % n == 0: 
+            occ_num_new = simulation.get_occupation_number()
+            outcome = simulation.ss_test(occ_num_new, occ_num, tol)
+            occ_num = occ_num_new
+            if outcome == True:
+                ss_time = total_time[i]
         
-        print(index)
-        print(simulation.taus[0:15])
-        print(simulation.a[0:15])
-        
-
 main()
