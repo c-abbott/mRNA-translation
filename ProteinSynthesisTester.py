@@ -23,7 +23,8 @@ def main():
         mcsteps = int(items[4])  # Monte Carlo steps.
         n = int(items[5])        # MC sampling frequency.
         tol = float(items[6])    # Steady state tolerance.
-    omegas = np.ones(L-1)*1.1    # Transition Rates.
+    omegas = np.ones(L)*1.1      # Transition Rates.
+    omegas[0] = 0
     omegas[-1] = beta 
 
     # Create instance of the simulation.
@@ -42,7 +43,9 @@ def main():
         total_time[i] = t
         # Choose which ribosome moves.
         index = simulation.get_transition(R)
+        # Update simulation - ribosome hops.
         simulation.update(index)
+
         # Determine time to reach steady state.
         if i % n == 0: 
             occ_num_new = simulation.get_occupation_number()

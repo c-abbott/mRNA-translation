@@ -68,6 +68,10 @@ class ProteinSynthesis(object):
         return j
     
     def update(self, index):
+        """
+            Update method to realise the transition
+            chosen by the Gillespie Algorithm
+        """
         # Initiation.
         if index == 0:
             self.taus[1] = 1
