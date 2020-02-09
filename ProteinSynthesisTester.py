@@ -1,6 +1,7 @@
 from ProteinSynthesis import ProteinSynthesis
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 
 def main():
     if len(sys.argv) != 2:
@@ -23,22 +24,25 @@ def main():
         mcsteps = int(items[4])  # Monte Carlo steps.
         n = int(items[5])        # MC sampling frequency.
         tol = float(items[6])    # Steady state tolerance.
-    omegas = np.ones(L)*1.1      # Transition Rates.
+    omegas = np.ones(L)*0.5      # Transition Rates.
     omegas[0] = 0                # Nothing will occupy first site.
     omegas[-1] = beta            # Detatch at final site.
 
     # Create instance of the simulation.
     simulation = ProteinSynthesis(length = l, size = L, alpha = alpha, omegas = omegas)
-    # Setting time domain
+    # Setting time domains.
     time_steps = np.zeros(mcsteps) # Array of all time step sizes.
     times = np.zeros(mcsteps)      # Cumulative sum of times.
-    # Setting densities.
+    # Setting densities and initial state.
+    state = np.zeros(simulation.size)
     densities = np.zeros(simulation.size)
-    # Initially no ribosomes on mRNA strand.
+    currents = np.zeros(simulation.size)
+    # Initial number of ribosomes on mRNA strand.
     occ_num = 0
     # For determining time to reach steady state.
     outcome = False
-    ss_time = 0
+    ss_time = 0 # Steady state time.
+
     # Simulation begins.
     for i in range(mcsteps):
         # Collect all possible moves.
@@ -46,11 +50,20 @@ def main():
         # Increase time.
         time_steps[i] = simulation.get_random_time(R)
         times[i] = np.sum(time_steps[:i+1])
-
         # Choose which ribosome moves.
         index = simulation.get_transition(R)
         # Update simulation - ribosome hops.
         simulation.update(index)
+
+        # Collect data after steady state reached.
+        if ss_time != 0:
+            densities += simulation.get_densities(state,
+                                                  (times[i]-ss_time), (times[i-1]-ss_time))
+            currents += simulation.taus - state
+            
+        # Store updated state.
+        state = simulation.taus
+    
 
         # Determine time to reach steady state.
         if i % n == 0 and outcome == False:
@@ -60,8 +73,10 @@ def main():
             if outcome == True:
                 ss_time = times[i]
 
-        if ss_time != 0:
-            densities += simulation.get_densities(times[i-1], times[i])
-    print(densities / (times[-1]-ss_time))
-
+    # Time spent in steady state
+    t_s = times[-1]-ss_time
+    print(ss_time)
+    # Plotting
+    simulation.plot_density(np.arange(1,300,1), densities[1:]/t_s)
+    simulation.plot_current(np.arange(1,300,1), currents[1:]/t_s)
 main()

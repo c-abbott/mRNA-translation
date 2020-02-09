@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import math
-
+import matplotlib.pyplot as plt
 
 class ProteinSynthesis(object):
     """
@@ -136,6 +136,33 @@ class ProteinSynthesis(object):
         else:
             return False
     
-    def get_densities(self, t0, t1):
-        densities = self.taus * t0 * (t1 - t0)
+    def get_densities(self, state, t1, t0):
+        """
+            A method to calculate the unormalised probability
+            density at each lattice site.
+        """
+        densities = state * (t1 - t0)
         return densities
+    
+    
+    def plot_density(self, x_data, y_data):
+        """
+            Density plotter.
+        """
+        plt.title("Lattice Site Density")
+        plt.xlabel("Lattice Site")
+        plt.ylabel(r"Denisty [$\rho$]")
+        plt.grid()
+        plt.plot(x_data, y_data)
+        plt.show()
+    
+    def plot_current(self, x_data, y_data):
+        """
+            Current plotter.
+        """
+        plt.title("Lattice Site Current")
+        plt.xlabel("Lattice Site")
+        plt.ylabel("Current [J]")
+        plt.grid()
+        plt.plot(x_data, y_data)
+        plt.show()
