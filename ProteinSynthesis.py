@@ -147,7 +147,7 @@ class ProteinSynthesis(object):
     
     def plot_density(self, x_data, y_data):
         """
-            Density plotter.
+            Density plotter for mRNA strand.
         """
         plt.title("Lattice Site Density")
         plt.xlabel("Lattice Site")
@@ -158,7 +158,7 @@ class ProteinSynthesis(object):
     
     def plot_current(self, x_data, y_data):
         """
-            Current plotter.
+            Current plotter for mRNA strand.
         """
         plt.title("Lattice Site Current")
         plt.xlabel("Lattice Site")
