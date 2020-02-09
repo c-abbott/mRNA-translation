@@ -54,15 +54,14 @@ def main():
         index = simulation.get_transition(R)
         # Update simulation - ribosome hops.
         simulation.update(index)
-
         # Collect data after steady state reached.
         if ss_time != 0:
             densities += simulation.get_densities(state,
                                                   (times[i]-ss_time), (times[i-1]-ss_time))
             currents += simulation.taus - state
-            
         # Store updated state.
-        state = simulation.taus
+        state = simulation.taus # THIS CHANGES DYNAMICALLY AND SO DOES NOTHING
+                                # NEED TO FIX
     
 
         # Determine time to reach steady state.
