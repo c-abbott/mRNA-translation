@@ -2,6 +2,7 @@ from ProteinSynthesis import ProteinSynthesis
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 
 def main():
     if len(sys.argv) != 2:
@@ -58,12 +59,10 @@ def main():
         if ss_time != 0:
             densities += simulation.get_densities(state,
                                                   (times[i]-ss_time), (times[i-1]-ss_time))
-            currents += simulation.taus - state
+            currents[index] += 1
         # Store updated state.
-        state = simulation.taus # THIS CHANGES DYNAMICALLY AND SO DOES NOTHING
-                                # NEED TO FIX
+        state = np.array(simulation.taus)
     
-
         # Determine time to reach steady state.
         if i % n == 0 and outcome == False:
             occ_num_new = simulation.get_occupation_number()
@@ -76,6 +75,6 @@ def main():
     t_s = times[-1]-ss_time
     print(ss_time)
     # Plotting
-    simulation.plot_density(np.arange(1,300,1), densities[1:]/t_s)
-    simulation.plot_current(np.arange(1,300,1), currents[1:]/t_s)
+    simulation.plot_density(np.arange(1,simulation.size,1), densities[1:]/t_s)
+    simulation.plot_current(np.arange(1,simulation.size,1), currents[1:]/t_s)
 main()
