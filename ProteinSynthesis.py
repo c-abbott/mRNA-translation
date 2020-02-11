@@ -72,52 +72,96 @@ class ProteinSynthesis(object):
             Update method to realise the transition
             chosen by the Gillespie Algorithm
         """
-        # Initiation.
-        if index == 0:
-            self.taus[1] = 1
-            self.a[0] = 0
-            self.a[1] = self.omegas[1]*(1 - self.taus[self.length+1])
-        # Elongation at index.
-        elif index >= 1 and index <= self.length:
-            self.taus[index] = 0
-            self.taus[index+1] = 1
-            self.a[index] = 0
-            self.a[index+1] = self.omegas[index+1] * \
-                (1-self.taus[index+1+self.length])
-        # Elongation at index and intiation.
-        elif index == (self.length + 1):
-            self.taus[index] = 0
-            self.taus[index+1] = 1
-            self.a[index] = 0
-            self.a[index+1] = self.omegas[index+1] * \
-                (1-self.taus[index+1+self.length])
-            self.a[0] = self.alpha
+        if self.length > 1:
+            # Initiation.
+            if index == 0:
+                self.taus[1] = 1
+                self.a[0] = 0
+                self.a[1] = self.omegas[1]*(1 - self.taus[self.length+1])
 
-        # Elongation and potential unblocking.
-        elif index >= (self.length + 2) and index <= (self.size-self.length-2):
-            self.taus[index] = 0
-            self.taus[index+1] = 1
-            self.a[index] = 0
-            self.a[index+1] = self.omegas[index+1] * \
-                (1-self.taus[index+1+self.length])
-            self.a[index-self.length] = self.omegas[index - self.length] \
-                                        * self.taus[index - self.length]
+            # Elongation at index.
+            elif index >= 1 and index <= self.length-1:
+                self.taus[index] = 0
+                self.taus[index+1] = 1
+                self.a[index] = 0
+                self.a[index+1] = self.omegas[index+1] * \
+                    (1-self.taus[index+1+self.length])
 
-        # No ribosomes ahead.
-        elif index >= (self.size-self.length-1) and index <= (self.size-2):
-            self.taus[index] = 0
-            self.taus[index+1] = 1
-            self.a[index] = 0
-            self.a[index+1] = self.omegas[index+1]
-            self.a[index-self.length] = self.omegas[index - self.length] \
-                                        * self.taus[index - self.length]
-            
-        # Detaching from lattice.
-        elif index == (self.size-1):
-            self.taus[index] = 0
-            self.a[index] = 0
-            self.a[index-self.length] = self.omegas[index - self.length] \
-                                        * self.taus[index - self.length]
+            # Elongation at index and intiation.
+            elif index == (self.length):
+                self.taus[index] = 0
+                self.taus[index+1] = 1
+                self.a[index] = 0
+                self.a[index+1] = self.omegas[index+1] * \
+                    (1-self.taus[index+1+self.length])
+                self.a[0] = self.alpha
+
+            # Elongation and potential unblocking.
+            elif index >= (self.length + 1) and index <= (self.size-self.length-2):
+                self.taus[index] = 0
+                self.taus[index+1] = 1
+                self.a[index] = 0
+                self.a[index+1] = self.omegas[index+1] * \
+                    (1-self.taus[index+1+self.length])
+                self.a[index-self.length] = self.omegas[index - self.length] \
+                                            * self.taus[index - self.length]
+
+            # No ribosomes ahead.
+            elif index >= (self.size-self.length-1) and index <= (self.size-2):
+                self.taus[index] = 0
+                self.taus[index+1] = 1
+                self.a[index] = 0
+                self.a[index+1] = self.omegas[index+1]
+                self.a[index-self.length] = self.omegas[index - self.length] \
+                                            * self.taus[index - self.length]
+                
+            # Detaching from lattice.
+            elif index == (self.size-1):
+                self.taus[index] = 0
+                self.a[index] = 0
+                self.a[index-self.length] = self.omegas[index - self.length] \
+                                            * self.taus[index - self.length]
+        else:
+            # Initiation.
+            if index == 0:
+                self.taus[1] = 1 # Site 2.
+                self.a[0] = 0
+                self.a[1] = self.omegas[1]*(1 - self.taus[self.length+1])
+
+            # Elongation and Initiation
+            if index == self.length:
+                self.taus[index] = 0    # Site 2.
+                self.taus[index+1] = 1  # Site 3.
+                self.a[index] = 0
+                self.a[index+1] = self.omegas[index+1] * \
+                    (1-self.taus[index+1+self.length])
+                self.a[0] = self.alpha
+
+            # Elongation and potential unblocking.
+            elif index >= (self.length + 1) and index <= (self.size-self.length-2):
+                self.taus[index] = 0
+                self.taus[index+1] = 1
+                self.a[index] = 0
+                self.a[index+1] = self.omegas[index+1] * \
+                    (1-self.taus[index+1+self.length])
+                self.a[index-self.length] = self.omegas[index - self.length] \
+                    * self.taus[index - self.length]
+
+            # No ribosomes ahead.
+            elif index >= (self.size-self.length-1) and index <= (self.size-2):
+                self.taus[index] = 0
+                self.taus[index+1] = 1
+                self.a[index] = 0
+                self.a[index+1] = self.omegas[index+1]
+                self.a[index-self.length] = self.omegas[index - self.length] \
+                    * self.taus[index - self.length]
+
+            # Detaching from lattice.
+            elif index == (self.size-1):
+                self.taus[index] = 0
+                self.a[index] = 0
+                self.a[index-self.length] = self.omegas[index - self.length] \
+                    * self.taus[index - self.length]
         
     def get_occupation_number(self):
         """
@@ -143,7 +187,6 @@ class ProteinSynthesis(object):
         """
         densities = state * (t1 - t0)
         return densities
-    
     
     def plot_density(self, x_data, y_data):
         """
