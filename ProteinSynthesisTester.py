@@ -25,7 +25,7 @@ def main():
         mcsteps = int(items[4])  # Monte Carlo steps.
         n = int(items[5])        # MC sampling frequency.
         tol = float(items[6])    # Steady state tolerance.
-    omegas = np.ones(L)*0.5      # Transition Rates.
+    omegas = np.ones(L)*1.0      # Transition Rates.
     omegas[0] = 0                # Nothing will occupy first site.
     omegas[-1] = beta            # Detatch at final site.
 
@@ -46,6 +46,7 @@ def main():
 
     # Simulation begins.
     for i in range(mcsteps):
+        print(i)
         # Collect all possible moves.
         R = simulation.get_R()
         # Increase time.
@@ -73,8 +74,10 @@ def main():
 
     # Time spent in steady state
     t_s = times[-1]-ss_time
-    print(ss_time)
+    print(t_s)
+    print(np.mean(densities[1:]/t_s))
+    print(np.mean(currents[:]/t_s))
     # Plotting
     simulation.plot_density(np.arange(1,simulation.size,1), densities[1:]/t_s)
-    simulation.plot_current(np.arange(1,simulation.size,1), currents[1:]/t_s)
+    simulation.plot_current(np.arange(0,simulation.size,1), currents[:]/t_s)
 main()
