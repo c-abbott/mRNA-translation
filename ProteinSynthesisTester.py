@@ -76,8 +76,8 @@ def main():
     t_s = times[-1]-ss_time
     print(t_s)
     print(np.mean(densities[1:]/t_s))
-    print(np.mean(currents[:]/t_s))
+    print(np.mean(currents/t_s))
     # Plotting
     simulation.plot_density(np.arange(1,simulation.size,1), densities[1:]/t_s)
-    simulation.plot_current(np.arange(0,simulation.size,1), currents[:]/t_s)
+    simulation.plot_current(np.arange(0,simulation.size,1), currents/t_s)
 main()
