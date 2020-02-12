@@ -175,7 +175,7 @@ class ProteinSynthesis(object):
             A method to determine the waiting time
             for the system to reach a steady state.
        """
-        if (occ_num_new - occ_num_old) / occ_num_new <= tolerance:
+        if (occ_num_new - occ_num_old) <= tolerance*occ_num_old:
             return True
         else:
             return False
