@@ -30,7 +30,7 @@ def main():
     omegas[-1] = beta            # Detatch at final site.
 
     # Denisities storage.
-    densities = []
+    densities = np.zeros(n_meas)
 
     for i in range(n_traj):
         # Create new instance of the simulation for every trajectory.
@@ -38,18 +38,22 @@ def main():
         # Setting time domains.
         dt = T / n_meas
         measure_times = np.arange(0, n_meas, dt)
-        ts = []
-        t = 0
-        while t < T:
+        t_old = 0
+        t_new = 0
+        while t_new < T:
             # Collect all possible moves.
             R = simulation.get_R()
             # Sample random time
-            t += simulation.get_random_time
-            ts.append(t)
+            t_new += simulation.get_random_time
+            # Count time ticks
+            ticks = simulation.count_time_ticks(t_new-t_old, dt)
+            # Update t_old
+            t_old = t_new
             # Choose which ribosome moves.
             index = simulation.get_transition(R)
             # Update simulation - ribosome hops.
             simulation.update(index)
+        
     
 
     
