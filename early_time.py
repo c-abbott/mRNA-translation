@@ -28,31 +28,39 @@ def main():
     omegas = np.ones(L)*1.0      # Transition Rates.
     omegas[0] = 0                # Nothing will occupy first site.
     omegas[-1] = beta            # Detatch at final site.
+    # Setting time domains for observables.
+    dt = T / n_meas
+    measure_times = np.arange(0, n_meas, dt)
 
-    # Denisities storage.
-    densities = np.zeros(n_meas)
+    # Data storage
+    densities = []
 
     for i in range(n_traj):
         # Create new instance of the simulation for every trajectory.
         simulation = ProteinSynthesis(length=l, size=L, alpha=alpha, omegas=omegas)
-        # Setting time domains.
-        dt = T / n_meas
-        measure_times = np.arange(0, n_meas, dt)
+        # Time initiation.
         t_old = 0
         t_new = 0
+        # Data storage.
+        traj_densities = []
+
+        # Begin trajectory.
         while t_new < T:
             # Collect all possible moves.
             R = simulation.get_R()
-            # Sample random time
+            # Sample random time.
             t_new += simulation.get_random_time
-            # Count time ticks
-            ticks = simulation.count_time_ticks(t_new-t_old, dt)
+            # Count time ticks.
+            ticks = simulation.count_ticks(t_new-t_old, dt)
+            for j in range(ticks):
+                traj_densities.append(simulation.get_occupation_number() / (simulation.size - 1))
             # Update t_old
             t_old = t_new
             # Choose which ribosome moves.
             index = simulation.get_transition(R)
             # Update simulation - ribosome hops.
             simulation.update(index)
+        
         
     
 
