@@ -20,7 +20,7 @@ class ProteinSynthesis(object):
         self.length = int(length)
         self.size = int(size)
         self.alpha = float(alpha)
-        self.omegas = omegas  # goes from site 2 to site L (site L = beta)
+        self.omegas = omegas  # goes from site 1 to site L (site L = beta)
         self.build_strand()
         self.build_propensity()
 
@@ -211,3 +211,18 @@ class ProteinSynthesis(object):
         plt.ylim(0,1)
         plt.plot(x_data, y_data)
         plt.show()
+    
+    def get_avg_density(self, densities, n_traj):
+        """
+            Method to calculate the average densitiy given
+            many translation trajectories.
+        """
+        rho = 1 / (n_traj*self.size-1) * np.sum(densities)
+        return rho
+    
+    def count_ticks(self, t_mc, dt):
+        """
+            Count time ticks between each Monte Carlo
+            step.
+        """
+        return math.floor(t_mc / dt)
