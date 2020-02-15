@@ -30,12 +30,12 @@ def main():
     omegas[-1] = beta            # Detatch at final site.
     # Setting time domains for observables.
     dt = T / n_meas
-    measure_times = np.arange(0, n_meas, dt)
-
+    measure_times = np.arange(0, T, dt)
     # Data storage
     densities = []
 
     for i in range(n_traj):
+        print(i)
         # Create new instance of the simulation for every trajectory.
         simulation = ProteinSynthesis(length=l, size=L, alpha=alpha, omegas=omegas)
         # Time initiation.
@@ -43,15 +43,16 @@ def main():
         t_new = 0
         # Data storage.
         traj_densities = []
-
         # Begin trajectory.
         while t_new < T:
             # Collect all possible moves.
             R = simulation.get_R()
             # Sample random time.
-            t_new += simulation.get_random_time
+            t_new += simulation.get_random_time(R)
+            #print(t_new)
             # Count time ticks.
-            ticks = simulation.count_ticks(t_new-t_old, dt)
+            ticks = simulation.count_ticks(t_new - t_old, dt)
+            #print(ticks)
             for j in range(ticks):
                 traj_densities.append(simulation.get_occupation_number() / (simulation.size - 1))
             # Update t_old
@@ -60,6 +61,18 @@ def main():
             index = simulation.get_transition(R)
             # Update simulation - ribosome hops.
             simulation.update(index)
+        
+        densities.append(np.array(traj_densities)[:n_meas-(n_meas//10)])
+    
+    densities_array = 1 / n_traj * np.mean(densities, axis = 0)
+    print(densities_array)
+
+    plt.plot(measure_times[:n_meas-(n_meas//10)], densities_array)
+    plt.show()
+
+main()
+        
+
         
         
     
