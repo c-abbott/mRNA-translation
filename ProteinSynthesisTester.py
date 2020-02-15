@@ -2,7 +2,6 @@ from ProteinSynthesis import ProteinSynthesis
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-import copy
 
 def main():
     if len(sys.argv) != 2:
