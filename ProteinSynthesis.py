@@ -195,8 +195,6 @@ class ProteinSynthesis(object):
         plt.title("Lattice Site Density")
         plt.xlabel("Lattice Site")
         plt.ylabel(r"Denisty [$\rho$]")
-        plt.grid()
-        plt.ylim(0,1)
         plt.plot(x_data, y_data)
         plt.show()
     
@@ -207,8 +205,6 @@ class ProteinSynthesis(object):
         plt.title("Lattice Site Current")
         plt.xlabel("Lattice Site")
         plt.ylabel("Current [J]")
-        plt.grid()
-        plt.ylim(0,1)
         plt.plot(x_data, y_data)
         plt.show()
     
