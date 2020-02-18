@@ -188,14 +188,16 @@ class ProteinSynthesis(object):
         densities = state * (t1 - t0)
         return densities
     
-    def plot_density(self, x_data, y_data):
+    def plot_density(self, x_data, y_data, t_1):
         """
             Density plotter for mRNA strand.
+            t_1 - Time for first ribsome to terminate.
         """
         plt.title("Lattice Site Density")
         plt.xlabel("Lattice Site")
         plt.ylabel(r"Denisty [$\rho$]")
         plt.plot(x_data, y_data)
+        plt.axvline(x = t_1, color = 'r', linestyle = '--')
         plt.show()
     
     def plot_current(self, x_data, y_data):
