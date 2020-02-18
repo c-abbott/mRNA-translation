@@ -210,14 +210,6 @@ class ProteinSynthesis(object):
         plt.plot(x_data, y_data)
         plt.show()
     
-    def get_avg_density(self, densities, n_traj):
-        """
-            Method to calculate the average densitiy given
-            many translation trajectories.
-        """
-        rho = 1 / (n_traj*self.size-1) * np.sum(densities)
-        return rho
-    
     def count_ticks(self, t_mc, dt):
         """
             Count time ticks between each Monte Carlo
