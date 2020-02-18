@@ -26,15 +26,15 @@ def main():
         beta = float(items[2])   # Detach rate.
         T = int(items[3])        # Upper time limit.
         n_traj = int(items[4])   # Number of trajectories.
-        n_meas = int(items[5])  # Number of measurements.
+        n_meas = int(items[5])   # Number of measurements.
     
     # Initialising elongation rates.
     with open(trans_params, "r") as f:
         elong_omegas = np.array([float(line.split()[1]) for line in f])
-    omegas = np.zeros(elong_omegas.size + 2)
-    omegas[1:-1] = elong_omegas  # Adding elongation rates.
+    omegas = np.zeros(elong_omegas.size + 1)
+    omegas[1:] = elong_omegas    # Adding elongation rates.
     omegas[0] = 0                # Nothing will occupy first site.
-    omegas[-1] = beta            # Termination rate.
+    #omegas[-1] = beta           # Termination rate.
     L = int(omegas.size)         # Initialising length of mRNA.
     
     # Setting time domains for observables.
@@ -81,7 +81,8 @@ def main():
         densities.append(np.array(traj_densities[:n_meas]))
 
     # Compute average over all trajectories.
-    densities_array = 1 / (n_traj*(simulation.size - 1)) * np.mean(densities, axis=0)
+    densities_array = 1 / (n_traj*(simulation.size - 1)
+                           ) * np.mean(densities, axis=0)
 
     # Plotting.
     simulation.plot_density(measure_times, densities_array)
