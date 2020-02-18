@@ -1,3 +1,14 @@
+"""
+    ================================================================
+    A python class to represent mathematically the process of mRNA 
+    translation. This research was conducted as part of my Senior 
+    Honours Project at the University of Edinburgh
+    ================================================================
+    Author: C. Abbott
+    Version: Feb 2019
+    ================================================================
+"""
+
 import numpy as np
 import random
 import math
