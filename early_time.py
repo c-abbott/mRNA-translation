@@ -1,9 +1,17 @@
+"""
+    ================================================================
+    A python script to investigate the early time, non steady-state 
+    behaviour of mRNA translation. This research was conducted as 
+    part of my Senior Honours Project at the University of Edinburgh
+    ================================================================
+    Author: C. Abbott
+    Version: Feb 2019
+    ================================================================
+"""
 from ProteinSynthesis import ProteinSynthesis
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-from copy import deepcopy
-
 
 def main():
     # Taking in arguments.
@@ -24,10 +32,9 @@ def main():
 
         l = int(items[0])        # Ribosome length.
         alpha = float(items[1])  # Initiation rate.
-        beta = float(items[2])   # Detach rate.
-        T = int(items[3])        # Upper time limit.
-        n_traj = int(items[4])   # Number of trajectories.
-        n_meas = int(items[5])   # Number of measurements.
+        T = int(items[2])        # Upper time limit.
+        n_traj = int(items[3])   # Number of trajectories.
+        n_meas = int(items[4])   # Number of measurements.
     
     # Initialising elongation rates.
     with open(trans_params, "r") as f:
@@ -35,7 +42,6 @@ def main():
     omegas = np.zeros(elong_omegas.size + 1)
     omegas[1:] = elong_omegas    # Adding elongation rates.
     omegas[0] = 0                # Nothing will occupy first site.
-    #omegas[-1] = beta           # Termination rate.
     L = int(omegas.size)         # Initialising length of mRNA.
     
     # Setting time domains for observables.
@@ -82,7 +88,6 @@ def main():
             if check == False:
                 if (index+1) == ribosome_pos:
                     ribosome_pos += 1
-                    #print(ribosome_pos)
                 elif ribosome_pos > simulation.size:
                     tagged_times.append(t_new)
                     check = True
@@ -94,15 +99,17 @@ def main():
             
         # Store each trajectory.
         densities.append(np.array(traj_densities[:n_meas]))
+
+    # Comparing analytical and experimental results
     avg_t1 = np.mean(np.array(tagged_times))
     print(avg_t1)
     exact_t1 = np.sum(np.reciprocal(omegas[1:]))
     print(exact_t1)
+
     # Compute average over all trajectories.
     densities_array = 1 / (simulation.size - 1) * np.mean(densities, axis=0)
-
     # Plotting.
-    simulation.plot_density(measure_times, densities_array)
+    simulation.plot_density(measure_times, densities_array, avg_t1)
 
 main()
         
