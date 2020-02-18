@@ -64,7 +64,7 @@ def main():
             ticks = simulation.count_ticks((t_new - t_old), dt)
             for j in range(ticks):
                 traj_densities.append(
-                    simulation.get_occupation_number() / (simulation.size - 1))
+                    simulation.get_occupation_number())
             # Update t_old
             t_old = t_new
             # Choose which ribosome moves.
@@ -75,13 +75,13 @@ def main():
         # Add on missed ticks.
         for k in range(n_meas - len(traj_densities)):
             traj_densities.append(
-                simulation.get_occupation_number() / (simulation.size - 1))
+                simulation.get_occupation_number())
             
         # Store each trajectory.
         densities.append(np.array(traj_densities[:n_meas]))
 
     # Compute average over all trajectories.
-    densities_array = 1 / n_traj * np.mean(densities, axis=0)
+    densities_array = 1 / (n_traj*(simulation.size - 1)) * np.mean(densities, axis=0)
 
     # Plotting.
     simulation.plot_density(measure_times, densities_array)
