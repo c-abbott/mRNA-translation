@@ -1,4 +1,4 @@
-10, 1.0, 10000, 15, 100, 1000
+10, 1.0, 30, 100, 1000
 
-# Ribosome Length, alpha, beta Time Limit, 
+# Ribosome Length, alpha, Time Limit, 
 # Number of Trajectories, Number of Measurements
