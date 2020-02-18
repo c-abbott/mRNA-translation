@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 
 def main():
+    # Taking in arguments.
     if len(sys.argv) != 2:
         print("Wrong number of arguments.")
         print("Usage: " + sys.argv[0] + " <parameters file>")
@@ -12,9 +13,9 @@ def main():
     else:
         infile_parameters = sys.argv[1]
 
-    # open input file and assinging parameters
+    # Open input file and assinging parameters.
     with open(infile_parameters, "r") as input_file:
-        # read the lines of the input data file
+        # Read the lines of the input data file.
         line = input_file.readline()
         items = line.split(", ")
 
@@ -34,6 +35,7 @@ def main():
     # Data storage
     densities = []
 
+    # Simulations begin.
     for i in range(n_traj):
         # Data storage.
         traj_densities = []
@@ -61,14 +63,15 @@ def main():
             index = simulation.get_transition(R)
             # Update simulation - ribosome hops.
             simulation.update(index)
-
+        
+        # Add on missed ticks.
         for k in range(n_meas - len(traj_densities)):
             traj_densities.append(
                 simulation.get_occupation_number() / (simulation.size - 1))
+        # Store each trajectory.
         densities.append(np.array(traj_densities[:n_meas]))
-
+    # Compute average over all trajectories.
     densities_array = 1 / n_traj * np.mean(densities, axis=0)
-    print(densities_array)
 
     plt.plot(measure_times, densities_array)
     plt.show()
