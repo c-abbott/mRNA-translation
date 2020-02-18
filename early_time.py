@@ -2,6 +2,7 @@ from ProteinSynthesis import ProteinSynthesis
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+from copy import deepcopy
 
 
 def main():
@@ -12,11 +13,11 @@ def main():
               " <parameters file>" + "<translation rates>")
         quit()
     else:
-        infile_parameters = sys.argv[1]
+        simul_parameters = sys.argv[1]
         trans_params = sys.argv[2]
 
     # Open input file and assinging parameters.
-    with open(infile_parameters, "r") as input_file:
+    with open(simul_parameters, "r") as input_file:
         # Read the lines of the input data file.
         line = input_file.readline()
         items = line.split(", ")
@@ -40,13 +41,18 @@ def main():
     # Setting time domains for observables.
     dt = T / n_meas
     measure_times = np.arange(0, T, dt)
-    # Data storage
+    # Data storage.
     densities = []
+    # Tagged ribosome times to complete synthesis of first peptide.
+    tagged_times = []
 
     # Simulations begin.
     for i in range(n_traj):
         # Data storage.
         traj_densities = []
+        # Tracking first ribosome.
+        ribosome_pos = 1
+        check = False
         # Time initiation.
         t_old = 0
         t_new = 0
@@ -54,8 +60,9 @@ def main():
         # Create new instance of the simulation for every trajectory.
         simulation = ProteinSynthesis(
             length=l, size=L, alpha=alpha, omegas=omegas)
+
         # Begin trajectory.
-        while t_new <= T:
+        while t_new <= T:  
             # Collect all possible moves.
             R = simulation.get_R()
             # Sample random time.
@@ -71,6 +78,14 @@ def main():
             index = simulation.get_transition(R)
             # Update simulation - ribosome hops.
             simulation.update(index)
+
+            if check == False:
+                if (index+1) == ribosome_pos:
+                    ribosome_pos += 1
+                    #print(ribosome_pos)
+                elif ribosome_pos > simulation.size:
+                    tagged_times.append(t_new)
+                    check = True
         
         # Add on missed ticks.
         for k in range(n_meas - len(traj_densities)):
@@ -79,10 +94,12 @@ def main():
             
         # Store each trajectory.
         densities.append(np.array(traj_densities[:n_meas]))
-
+    avg_t1 = np.mean(np.array(tagged_times))
+    print(avg_t1)
+    exact_t1 = np.sum(np.reciprocal(omegas[1:]))
+    print(exact_t1)
     # Compute average over all trajectories.
-    densities_array = 1 / (n_traj*(simulation.size - 1)
-                           ) * np.mean(densities, axis=0)
+    densities_array = 1 / (simulation.size - 1) * np.mean(densities, axis=0)
 
     # Plotting.
     simulation.plot_density(measure_times, densities_array)
