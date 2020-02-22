@@ -227,3 +227,15 @@ class ProteinSynthesis(object):
             step.
         """
         return math.floor(t_mc / dt)
+    
+    def get_k1(self, t, dt):
+        """
+            Method to find lower tick.
+        """
+        return (math.floor(t / dt) + 1)
+    
+    def get_k2(self, t, dt):
+        """
+            Method to find upper tick.
+        """
+        return (math.floor(t / dt))
