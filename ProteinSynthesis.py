@@ -209,6 +209,7 @@ class ProteinSynthesis(object):
         plt.ylabel(r"Denisty [$\rho$]")
         plt.plot(x_data, y_data)
         plt.axvline(x = t_1, color = 'r', linestyle = '--')
+        plt.axhline(y = y_data.max(), color = 'b', linestyle = '--')
         plt.savefig("denisty_plot.png")
         plt.show()
     
