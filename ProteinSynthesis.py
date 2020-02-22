@@ -221,13 +221,6 @@ class ProteinSynthesis(object):
         plt.plot(x_data, y_data)
         plt.show()
     
-    def count_ticks(self, t_mc, dt):
-        """
-            Count time ticks between each Monte Carlo
-            step.
-        """
-        return math.floor(t_mc / dt)
-    
     def get_k1(self, t, dt):
         """
             Method to find lower tick.
