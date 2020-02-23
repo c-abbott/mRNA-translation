@@ -5,13 +5,14 @@
     part of my Senior Honours Project at the University of Edinburgh
     ================================================================
     Author: C. Abbott
-    Version: Feb 2019
+    Version: Feb 2020
     ================================================================
 """
 from ProteinSynthesis import ProteinSynthesis
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+import openpyxl
 
 def main():
     # Taking in arguments.
@@ -23,6 +24,23 @@ def main():
     else:
         simul_parameters = sys.argv[1]
         trans_params = sys.argv[2]
+
+    # Loading Excel spreadsheet.
+    wb = openpyxl.load_workbook("Initiation-Rates.xlsx")
+    ws = wb.get_sheet_by_name('LacZ')
+    # Storing genes and alphas.
+    alphas = []
+    genes = []
+    # Get alphas.
+    for column in ws['B2':'B786']:
+        for cell in column:
+            alphas.append(cell.value)
+    # Get gene names.
+    for column in ws['A2':'A786']:
+        for cell in column:
+            genes.append(cell.value)
+    # Creating dictionary to hold alphas.
+    alpha_dict = dict(zip(genes, alphas))
 
     # Open input file and assinging parameters.
     with open(simul_parameters, "r") as f:
@@ -43,7 +61,7 @@ def main():
     omegas[1:] = elong_omegas    # Adding elongation rates.
     omegas[0] = alpha            # Initiation rate.
     L = int(omegas.size)         # Initialising length of mRNA.
-
+    
     # Setting time domains for observables.
     dt = T / n_meas
     measure_times = np.arange(0, T, dt)
@@ -54,6 +72,7 @@ def main():
 
     # Simulations begin.
     for i in range(n_traj):
+        print(i)
         # Density data storage.
         traj_densities = np.zeros(measure_times.size)
         # Tracking first ribosome.
@@ -65,20 +84,17 @@ def main():
         # Tick finding
         k1 = 0
         k2 = 0
-        print(i)
         # Create new instance of the simulation for every trajectory.
         simulation = ProteinSynthesis(
             length=l, size=L, alpha=alpha, omegas=omegas)
         # Begin trajectory.
         while t_new <= T:
-            # Get k1.
-            k1 = simulation.get_k1(t_old, dt)
+            k1 = simulation.get_k1(t_old, dt) # Get k1.
             # Collect all possible moves.
             R = simulation.get_R()
             # Sample random time.
             t_new += simulation.get_random_time(R)
-            # Get k2.
-            k2 = simulation.get_k2(t_new, dt)
+            k2 = simulation.get_k2(t_new, dt) # Get k2.
             # Final loop check.
             if t_new > T:
                 k2 = n_meas
@@ -102,7 +118,7 @@ def main():
     
     # Compute actual density.
     densities = densities / (n_traj * (L - 1))
-
+    
     # Comparing analytical and experimental results
     avg_t1 = np.mean(np.array(tagged_times))
     print(avg_t1)
