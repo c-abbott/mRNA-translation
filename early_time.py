@@ -27,7 +27,8 @@ def main():
 
     # Loading Excel spreadsheet.
     wb = openpyxl.load_workbook("Initiation-Rates.xlsx")
-    ws = wb.get_sheet_by_name('LacZ')
+    # Choosing appropriate sheet.
+    ws = wb['LacZ']
     # Storing genes and alphas.
     alphas = []
     genes = []
@@ -43,24 +44,24 @@ def main():
     alpha_dict = dict(zip(genes, alphas))
 
     # Open input file and assinging parameters.
-    with open(simul_parameters, "r") as f:
+    with open(str(simul_parameters), "r") as f:
         # Read the lines of the input data file.
         line = f.readline()
         items = line.split(", ")
-
         l = int(items[0])        # Ribosome length.
-        alpha = float(items[1])  # Initiation rate.
-        T = int(items[2])        # Upper time limit.
-        n_traj = int(items[3])   # Number of trajectories.
-        n_meas = int(items[4])   # Number of measurements.
-    
+        T = int(items[1])        # Upper time limit.
+        n_traj = int(items[2])   # Number of trajectories.
+        n_meas = int(items[3])   # Number of measurements.
+    alpha = alpha_dict[str(trans_params[15:19])]
+
     # Initialising elongation rates.
-    with open(trans_params, "r") as f:
+    with open(str(trans_params), "r") as f:
         elong_omegas = np.array([float(line.split()[1]) for line in f])
     omegas = np.zeros(elong_omegas.size + 1)
-    omegas[1:] = elong_omegas    # Adding elongation rates.
-    omegas[0] = alpha            # Initiation rate.
-    L = int(omegas.size)         # Initialising length of mRNA.
+    omegas[1:] = elong_omegas  # Adding elongation rates.
+    # Initiation rate.
+    omegas[0] = alpha
+    L = int(omegas.size)       # Setting length of mRNA.
     
     # Setting time domains for observables.
     dt = T / n_meas
@@ -81,7 +82,7 @@ def main():
         # Time initiation.
         t_old = 0
         t_new = 0
-        # Tick finding
+        # Tick finding.
         k1 = 0
         k2 = 0
         # Create new instance of the simulation for every trajectory.
