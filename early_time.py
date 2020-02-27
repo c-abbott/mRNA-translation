@@ -49,9 +49,8 @@ def main():
         line = f.readline()
         items = line.split(", ")
         l = int(items[0])        # Ribosome length.
-        T = int(items[1])        # Upper time limit.
-        n_traj = int(items[2])   # Number of trajectories.
-        n_meas = int(items[3])   # Number of measurements.
+        n_traj = int(items[1])   # Number of trajectories.
+        n_meas = int(items[2])   # Number of measurements.
     alpha = alpha_dict[str(trans_params[15:19])]
 
     # Initialising elongation rates.
@@ -59,9 +58,13 @@ def main():
         elong_omegas = np.array([float(line.split()[1]) for line in f])
     omegas = np.zeros(elong_omegas.size + 1)
     omegas[1:] = elong_omegas  # Adding elongation rates.
-    # Initiation rate.
-    omegas[0] = alpha
+    omegas[0] = alpha          # Initiation rate.
     L = int(omegas.size)       # Setting length of mRNA.
+
+    # Time taken for first ribosome to complete translation.
+    exact_t1 = np.sum(np.reciprocal(omegas[1:]))
+    # Upper time limit for simulation. 
+    T = 1.5 * exact_t1
     
     # Setting time domains for observables.
     dt = T / n_meas
@@ -123,7 +126,6 @@ def main():
     # Comparing analytical and experimental results
     avg_t1 = np.mean(np.array(tagged_times))
     print(avg_t1)
-    exact_t1 = np.sum(np.reciprocal(omegas[1:]))
     print(exact_t1)
     
     # Plotting.
