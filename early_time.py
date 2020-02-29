@@ -129,7 +129,10 @@ def main():
     print(exact_t1)
     
     # Plotting.
-    simulation.plot_density(measure_times, densities, avg_t1)
+    simulation.plot_density(measure_times, densities,
+                            avg_t1, str(trans_params[15:19]))
+    # Saving data.
+    simulation.save_data(measure_times, densities, str(trans_params[15:19]))
 
 main()
         
