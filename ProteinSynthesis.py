@@ -199,18 +199,18 @@ class ProteinSynthesis(object):
         densities = state * (t1 - t0)
         return densities
     
-    def plot_density(self, x_data, y_data, t_1):
+    def plot_density(self, x_data, y_data, t_1, gene):
         """
             Density plotter for mRNA strand.
             t_1 - Time for first ribsome to terminate.
         """
-        plt.title("Lattice Site Density")
-        plt.xlabel("Lattice Site")
+        plt.title("Lattice Site Density" + " | Gene: " + gene)
+        plt.xlabel("Time (s)")
         plt.ylabel(r"Denisty [$\rho$]")
         plt.plot(x_data, y_data)
         plt.axvline(x = t_1, color = 'r', linestyle = '--')
         plt.axhline(y = y_data.max(), color = 'b', linestyle = '--')
-        plt.savefig("denisty_plot.png")
+        plt.savefig("density_plots/" + gene + "_plot.png")
         plt.show()
     
     def plot_current(self, x_data, y_data):
@@ -222,6 +222,13 @@ class ProteinSynthesis(object):
         plt.ylabel("Current [J]")
         plt.plot(x_data, y_data)
         plt.show()
+    
+    def save_data(self, x_data, y_data, gene):
+        """
+            Gene dependent data file writing.
+        """
+        with open(gene + "_data.dat", "w+") as f:
+            f.writelines(map("{}, {}\n".format, x_data, y_data))
     
     def get_k1(self, t, dt):
         """
