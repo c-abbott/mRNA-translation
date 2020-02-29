@@ -227,7 +227,7 @@ class ProteinSynthesis(object):
         """
             Gene dependent data file writing.
         """
-        with open(gene + "_data.dat", "w+") as f:
+        with open(gene + "_density_data.dat", "w+") as f:
             f.writelines(map("{}, {}\n".format, x_data, y_data))
     
     def get_k1(self, t, dt):
