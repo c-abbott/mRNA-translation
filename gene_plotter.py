@@ -41,15 +41,17 @@ m_ana, c_ana = np.linalg.lstsq(M, T1s_ana, rcond=None)[0]
 pear_R_exp = np.corrcoef(half_lives, T1s_exp)[1, 0]
 pear_R_ana = np.corrcoef(half_lives, T1s_exp)[1, 0]
 
-
 # Display scatter plot data.
 plt.figure(figsize=(10, 8))
 plt.title('Translation Time vs. mRNA Half-Life', fontsize=20)
-plt.xlabel('t_1/2', fontsize=15)
-plt.ylabel('<T1>', fontsize=15)
-plt.scatter(gene_data["t_1/2"], gene_data["T1_exp"], marker='o')
-plt.scatter(gene_data["t_1/2"], gene_data["T1_ana"], marker='1')
-plt.plot(half_lives, m_exp*half_lives + c_exp, 'r', label='Exp Fitted line')
-plt.plot(half_lives, m_ana*half_lives + c_ana, 'g', label='Ana Fitted line')
+plt.xlabel('mRNA Half-Life (t_1/2)', fontsize=15)
+plt.ylabel('Mean Translation Time (<T1>)', fontsize=15)
+plt.scatter(gene_data["t_1/2"], gene_data["T1_exp"], marker='o', label = "Simulation Data")
+plt.scatter(gene_data["t_1/2"], gene_data["T1_ana"], marker='1', label = "Analytical Data")
+plt.plot(half_lives, m_exp*half_lives + c_exp, 'r',
+         label="Simulation Fit |%6s, r = %6.2e" % ('red', pear_R_exp))
+plt.plot(half_lives, m_ana*half_lives + c_ana, 'g',
+         label="Analytical Fit |%6s, r = %6.2e" % ('green', pear_R_ana))
 plt.legend()
+plt.savefig("gene_plot.png")
 plt.show()
