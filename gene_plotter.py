@@ -49,7 +49,7 @@ plt.title('Translation Time vs. mRNA Half-Life', fontsize=20)
 plt.xlabel('mRNA Half-Life (t_1/2)', fontsize=15)
 plt.ylabel('Mean Translation Time (<T1>)', fontsize=15)
 plt.scatter(gene_data["t_1/2"], gene_data["T1_exp"], marker='o', label = "Simulation Data")
-plt.scatter(gene_data["t_1/2"], gene_data["T1_ana"], marker='1', label = "Analytical Data")
+plt.scatter(gene_data["t_1/2"], gene_data["T1_ana"], marker='o', label = "Analytical Data")
 plt.plot(half_lives, m_exp*half_lives + c_exp, 'r',
          label="Simulation Fit |%6s, r = %6.2e" % ('red', pear_R_exp))
 plt.plot(half_lives, m_ana*half_lives + c_ana, 'g',
