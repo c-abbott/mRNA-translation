@@ -32,11 +32,15 @@ for label, coord in gene_dict.items():
     gene_data["label"].append(label)
 
 # Statistiacal manipulation.
-half_lives = np.array(gene_dict["t_1/2"])
-T1s_exp = np.array(gene_dict["T1_exp"])
-T1s_ana = np.array(gene_dict["T1_ana"])
+half_lives = np.array(gene_data["t_1/2"])
+T1s_exp = np.array(gene_data["T1_exp"])
+T1s_ana = np.array(gene_data["T1_ana"])
 M = np.vstack([half_lives, np.ones(len(half_lives))]).T
 m_exp, c_exp = np.linalg.lstsq(M, T1s_exp, rcond=None)[0]
+m_ana, c_ana = np.linalg.lstsq(M, T1s_ana, rcond=None)[0]
+pear_R_exp = np.corrcoef(half_lives, T1s_exp)[1, 0]
+pear_R_ana = np.corrcoef(half_lives, T1s_exp)[1, 0]
+
 
 # Display scatter plot data.
 plt.figure(figsize=(10, 8))
@@ -45,4 +49,7 @@ plt.xlabel('t_1/2', fontsize=15)
 plt.ylabel('<T1>', fontsize=15)
 plt.scatter(gene_data["t_1/2"], gene_data["T1_exp"], marker='o')
 plt.scatter(gene_data["t_1/2"], gene_data["T1_ana"], marker='1')
+plt.plot(half_lives, m_exp*half_lives + c_exp, 'r', label='Exp Fitted line')
+plt.plot(half_lives, m_ana*half_lives + c_ana, 'g', label='Ana Fitted line')
+plt.legend()
 plt.show()
