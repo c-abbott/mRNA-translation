@@ -1,5 +1,6 @@
 import numpy as np 
 import matplotlib.pyplot as plt
+import scipy.stats as stats
 
 """
     Dictionary containing data collected from
@@ -38,8 +39,9 @@ T1s_ana = np.array(gene_data["T1_ana"])
 M = np.vstack([half_lives, np.ones(len(half_lives))]).T
 m_exp, c_exp = np.linalg.lstsq(M, T1s_exp, rcond=None)[0]
 m_ana, c_ana = np.linalg.lstsq(M, T1s_ana, rcond=None)[0]
-pear_R_exp = np.corrcoef(half_lives, T1s_exp)[1, 0]
-pear_R_ana = np.corrcoef(half_lives, T1s_exp)[1, 0]
+pear_R_exp, p_exp = stats.pearsonr(half_lives, T1s_exp)
+pear_R_ana, p_ana = stats.pearsonr(half_lives, T1s_exp)
+print(p_exp, p_ana)
 
 # Display scatter plot data.
 plt.figure(figsize=(10, 8))
