@@ -21,7 +21,22 @@ gene_dict = {
             'rpsL': [6.3650, 5.3821, 480],   'yacC': [7.3487, 6.0256, 414],
             'queA': [20.6838, 17.3114, 954], 'phoB': [13.7744, 11.2784, 294],
             'ahpC': [9.1262, 8.7535, 1086],  'cstA': [41.3607, 33.8641, 276],
-            'nagE': [36.8743, 30.9129, 552], 'glnS': [30.8389, 26.0784, 144]
+            'nagE': [36.8743, 30.9129, 552], 'glnS': [30.8389, 26.0784, 144],
+            'fldA': [9.7444, 8.1320, 162],   'ybfE': [5.1051, 4.1962, 264],
+            'ybfF': [14.9854, 12.8428, 180], 'ybfA': [3.9918, 3.2873, 384],
+            'gltA': [22.7271, 21.4408, 138], 'aroG': [20.0883, 17.0728, 156],
+            'gpmA': [11.8463, 10.4654, 174], 'ybhC': [24.8642, 20.6214, 384],
+            'ybhB': [9.9909, 8.4315, 324],   'bioA': [27.1148, 22.7728, 132],
+            'ybiC': [22.8083, 19.9431, 228], 'ybiJ': [4.6561, 4.1471, 228],
+            'glnH': [13.7425, 11.7472, 342], 'ybiT': [28.9572, 24.9153, 306],
+            'ybjG': [12.3880, 10.5454, 492], 'rimK': [17.2669, 14.0255, 264],
+            'ybjN': [9.9647, 8.2829, 324],   'potF': [21.8504, 18.5763, 252],
+            'artJ': [14.4017, 13.0224, 246], 'cspD': [4.8501, 3.9999, 924],
+            'infA': [3.8718, 3.2838, 204],   'trxB': [17.9053, 14.8329, 234],
+            'serS': [23.3094, 19.4853, 156], 'ycaD': [23.2843, 19.0645, 324],
+            'pflA': [14.4859, 12.2681, 258], 'pflB': [39.7954, 35.8073, 348],
+            'serC': [20.6774, 17.7228, 120], 'aroA': [22.4971, 19.6186, 114],
+            'rpsA': [26.6926, 22.4792, 252], 'aspC': [20.7294, 19.0304, 258]
             }
 
 # Repackage for plotting.
@@ -37,8 +52,8 @@ half_lives = np.array(gene_data["t_1/2"])
 T1s_exp = np.array(gene_data["T1_exp"])
 T1s_ana = np.array(gene_data["T1_ana"])
 M = np.vstack([half_lives, np.ones(len(half_lives))]).T
-m_exp, c_exp = np.linalg.lstsq(M, T1s_exp, rcond=None)[0]
-m_ana, c_ana = np.linalg.lstsq(M, T1s_ana, rcond=None)[0]
+m_exp, c_exp = np.linalg.lstsq(M, T1s_exp)[0]
+m_ana, c_ana = np.linalg.lstsq(M, T1s_ana)[0]
 pear_R_exp, p_exp = stats.pearsonr(half_lives, T1s_exp)
 pear_R_ana, p_ana = stats.pearsonr(half_lives, T1s_exp)
 print(p_exp, p_ana)
