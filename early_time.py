@@ -114,12 +114,12 @@ def main():
             if check == False:
                 if (index+1) == ribosome_pos:
                     ribosome_pos += 1
-                elif ribosome_pos > simulation.size:
-                    tagged_times.append(t_new)
-                    check = True
+                    if ribosome_pos > (simulation.size-1):
+                        tagged_times.append(t_new)
+                        check = True
+
         # Collect data for each trajectory. 
         densities += traj_densities
-    
     # Compute actual density.
     densities = densities / (n_traj * (L - 1))
     
