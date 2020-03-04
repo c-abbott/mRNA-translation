@@ -114,8 +114,12 @@ def main():
             if check == False:
                 if (index+1) == ribosome_pos:
                     ribosome_pos += 1
+                    # Ignore initiation time.
+                    if ribosome_pos == 2:
+                        initiation_time = t_new
+                    # Store <T1>
                     if ribosome_pos > (simulation.size-1):
-                        tagged_times.append(t_new)
+                        tagged_times.append(t_new - initiation_time)
                         check = True
 
         # Collect data for each trajectory. 
