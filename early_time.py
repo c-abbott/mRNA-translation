@@ -131,6 +131,7 @@ def main():
     avg_t1 = np.mean(np.array(tagged_times))
     print(avg_t1)
     print(exact_t1)
+    print(initiation_time)
     
     # Plotting.
     simulation.plot_density(measure_times, densities,
