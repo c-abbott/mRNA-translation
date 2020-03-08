@@ -1,12 +1,14 @@
 import numpy as np 
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+import matplotlib.style as style
+import csv
 
 """
     Dictionary containing data collected from
     early_time.py for a set of unique E. coli
     genes.
-"""
+
 gene_dict = {
             'yaaA': [15.1658, 13.2024, 228], 'talB': [15.1884, 13.4269, 204],
             'dnaK': [32.8133, 28.4524, 144], 'dnaJ': [20.9123, 17.8550, 150],
@@ -38,37 +40,52 @@ gene_dict = {
             'serC': [20.6774, 17.7228, 120], 'aroA': [22.4971, 19.6186, 114],
             'rpsA': [26.6926, 22.4792, 252], 'aspC': [20.7294, 19.0304, 258]
             }
+"""
+def main():
+    # Open file.
+    with open("overall_gene_dat.csv", "r") as f:
+        reader = csv.reader(f)
+        # Skip first line.
+        next(f)
+        # Dictionary for plotting.
+        gene_dict = {}
+        # Assigning values from CSV.
+        for row in reader:
+            key = row[0]
+            # Duplicate row handling.
+            if key in gene_dict:
+                pass
+            # Making data floats.
+            vals = row[1:]
+            gene_dict[key] = [float(i) for i in vals]
 
-# Repackage for plotting.
-gene_data = {"T1_exp": [], "T1_ana": [], "t_1/2": [], "label": []}
-for label, coord in gene_dict.items():
-    gene_data["T1_exp"].append(coord[0])
-    gene_data["T1_ana"].append(coord[1])
-    gene_data["t_1/2"].append(coord[2])
-    gene_data["label"].append(label)
+    # Repackage for plotting.
+    gene_data = {"T1_exp": [], "T1_ana": [],
+                 "lambda": [], "t_1/2": [], "label": []}
+    for label, coord in gene_dict.items():
+        gene_data["T1_exp"].append(coord[0])
+        gene_data["T1_ana"].append(coord[1])
+        gene_data["lambda"].append(coord[2])
+        gene_data["t_1/2"].append(coord[3])
+        gene_data["label"].append(label)
 
-# Statistiacal manipulation.
-half_lives = np.array(gene_data["t_1/2"])
-T1s_exp = np.array(gene_data["T1_exp"])
-T1s_ana = np.array(gene_data["T1_ana"])
-M = np.vstack([half_lives, np.ones(len(half_lives))]).T
-m_exp, c_exp = np.linalg.lstsq(M, T1s_exp)[0]
-m_ana, c_ana = np.linalg.lstsq(M, T1s_ana)[0]
-pear_R_exp, p_exp = stats.pearsonr(half_lives, T1s_exp)
-pear_R_ana, p_ana = stats.pearsonr(half_lives, T1s_exp)
-print(p_exp, p_ana)
+    # Statistiacal manipulation.
+    half_lives = np.array(gene_data["t_1/2"])
+    T1s_exp = np.array(gene_data["T1_exp"])
+    M = np.vstack([half_lives, np.ones(len(half_lives))]).T
+    m_exp, c_exp = np.linalg.lstsq(M, T1s_exp, rcond=None)[0]
+    pear_R_exp, p_exp = stats.pearsonr(half_lives, T1s_exp)
 
-# Display scatter plot data.
-plt.figure(figsize=(10, 8))
-plt.title('Translation Time vs. mRNA Half-Life', fontsize=20)
-plt.xlabel('mRNA Half-Life (t_1/2)', fontsize=15)
-plt.ylabel('Mean Translation Time (<T1>)', fontsize=15)
-plt.scatter(gene_data["t_1/2"], gene_data["T1_exp"], marker='o', label = "Simulation Data")
-plt.scatter(gene_data["t_1/2"], gene_data["T1_ana"], marker='o', label = "Analytical Data")
-plt.plot(half_lives, m_exp*half_lives + c_exp, 'r',
-         label="Simulation Fit |%6s, r = %6.2e" % ('red', pear_R_exp))
-plt.plot(half_lives, m_ana*half_lives + c_ana, 'g',
-         label="Analytical Fit |%6s, r = %6.2e" % ('green', pear_R_ana))
-plt.legend()
-plt.savefig("gene_plot.png")
-plt.show()
+    # Display scatter plot data.
+    style.use('seaborn-poster')
+    style.use('ggplot')
+    plt.title('Translation Time vs. mRNA Half-Life', fontsize=20)
+    plt.xlabel('mRNA Half-Life (s)', fontsize=15)
+    plt.ylabel('Mean Translation Time (s)', fontsize=15)
+    plt.scatter(gene_data["t_1/2"], gene_data["T1_exp"], marker='.', label = "Simulation Data")
+    plt.plot(half_lives, m_exp*half_lives + c_exp, 'b',
+            label="Fit |r = %6.2e, p = %6.2e "% (pear_R_exp, p_exp))
+    plt.legend()
+    plt.savefig("overall_gene_plot.png")
+    plt.show()
+main()
