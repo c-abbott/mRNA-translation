@@ -17,6 +17,21 @@ def get_fit(dict, x_label, y_label):
     return m, c
 
 
+def plotter(dict, gradient, intercept, pear_r, p_val, x_label, y_label, xaxis_label, yaxis_label, title, file_name):
+    # Display scatter plot data.
+    plt.figure(figsize=(10, 8))
+    plt.title(str(title), fontsize=20)
+    plt.xlabel(str(xaxis_label), fontsize=15)
+    plt.ylabel(str(yaxis_label), fontsize=15)
+    plt.scatter(dict[str(x_label)], dict[str(y_label)],
+                marker='o')
+    x_data = np.array(dict[str(x_label)])
+    plt.plot(x_data, gradient*x_data + intercept, 'r',
+            label="Fit |%6s, r = %6.2e" % ('red', pear_r, p_val))
+    plt.legend()
+    plt.savefig(str(file_name))
+    plt.show()
+
 def main():
     # Open file.
     with open("unstable_genes.csv", "r") as f:
