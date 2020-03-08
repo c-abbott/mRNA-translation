@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.style as style
 import scipy.stats as stats
 import csv
 
@@ -18,16 +19,17 @@ def get_correlation(dict, x_label, y_label):
 
 def plotter(dict, gradient, intercept, pear_r, p_val, x_label, y_label, xaxis_label, yaxis_label, title, file_name):
     # Display scatter plot data.
-    plt.figure(figsize=(10, 8))
+    style.use('seaborn-poster')  
+    style.use('ggplot')
     plt.title(title, fontsize=20)
     plt.xlabel(xaxis_label, fontsize=15)
     plt.ylabel(yaxis_label, fontsize=15)
-    plt.scatter(dict[x_label], dict[y_label], marker='o', label = "Data")
+    plt.scatter(dict[x_label], dict[y_label], marker='.', label = "Data")
     x_data = np.array(dict[x_label], dtype=np.float64)
-    plt.plot(x_data, gradient*x_data + intercept, 'r',
-             label="Fit |%6s, r = %6.2e, p = %6.2e" % ('red', pear_r, p_val))
+    plt.plot(x_data, gradient*x_data + intercept, 'b',
+             label="Fit | r = %6.2e, p = %6.2e" % (pear_r, p_val))
     plt.legend()
-    plt.savefig('unstable_dat/' + file_name)
+    plt.savefig('unstable_plots/' + file_name)
     plt.show()
 
 def main():
