@@ -73,6 +73,7 @@ def main():
     densities = np.zeros(measure_times.size)
     # Tagged ribosome times to complete synthesis of first peptide.
     tagged_times = []
+    initiation_times = []
 
     # Simulations begin.
     for i in range(n_traj):
@@ -117,6 +118,7 @@ def main():
                     # Ignore initiation time.
                     if ribosome_pos == 2:
                         initiation_time = t_new
+                        initiation_times.append(initiation_time)
                     # Store <T1>
                     if ribosome_pos > (simulation.size-1):
                         tagged_times.append(t_new - initiation_time)
@@ -126,6 +128,8 @@ def main():
         densities += traj_densities
     # Compute actual density.
     densities = densities / (n_traj * (L - 1))
+    # Calculating mean initiation time.
+    initiation_time = np.mean(initiation_times)
     
     # Comparing analytical and experimental results
     avg_t1 = np.mean(np.array(tagged_times))
