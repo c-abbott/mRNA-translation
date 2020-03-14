@@ -219,22 +219,30 @@ class ProteinSynthesis(object):
             Density plotter for mRNA strand in
             steady state.
         """
-        plt.title("Lattice Site Density")
-        plt.xlabel("Time (s)")
-        plt.ylabel(r"Denisty [$\rho$]")
-        #plt.ylim(0.0, 1.0)
-        plt.plot(x_data, y_data)
+        plt.figure(figsize=(10,8))
+        plt.title("Lattice Site Density", fontsize = 21)
+        plt.xlabel("Time (s)", fontsize = 16)
+        plt.ylabel(r"Denisty [$\rho$]", fontsize = 16)
+        plt.ylim(0.2, 0.5)
+        plt.plot(x_data, y_data, 'g')
+        plt.xticks(fontsize = 16)
+        plt.yticks(fontsize = 16)
+        plt.savefig("ss_density.png")
         plt.show()
 
     def plot_current(self, x_data, y_data):
         """
             Current plotter for mRNA strand.
         """
-        plt.title("Lattice Site Current")
-        plt.xlabel("Lattice Site")
-        plt.ylabel("Current [J]")
-        #plt.ylim(0.0, 1.0)
-        plt.plot(x_data, y_data)
+        plt.figure(figsize=(10,8))
+        plt.title("Lattice Site Current", fontsize = 21)
+        plt.xlabel("Lattice Site", fontsize = 16)
+        plt.ylabel("Current [J]", fontsize = 16)
+        plt.ylim(0.1, 0.3)
+        plt.plot(x_data, y_data, 'r')
+        plt.xticks(fontsize = 16)
+        plt.yticks(fontsize = 16)
+        plt.savefig("ss_current.png")
         plt.show()
 
     def save_data(self, x_data, y_data, gene):
