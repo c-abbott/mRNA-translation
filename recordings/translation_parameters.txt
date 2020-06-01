@@ -1,0 +1,4 @@
+1, 50, 0.3, 0.7, 100000, 10, 0.01
+
+# Ribosome Length, mRNA Length, alpha, beta, mcsteps
+# Sampling Freq, Tolerance
